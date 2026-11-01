@@ -1,0 +1,79 @@
+/* Import Font Poppins */
+body {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-primary);
+
+  .aplication {
+    /*centralizar a imagem*/
+    display: flex;
+    align-items: end;
+
+    .container-content {
+  
+      .container-seller {
+        display: flex;
+        flex-direction: column;
+        width: 600px;
+        height: 160px;
+        background: var(--color-bg-sidebar);
+        border-radius: 15px;
+        justify-content: center;
+        align-items: center;
+        gap: 10%;
+  
+        text-decoration: none;
+        color: #fff;
+        font-size: 25px;
+        font-weight: 600;
+  
+        transition: all ease-in-out 0.5s;
+  
+        &:hover {
+          box-shadow:
+            rgba(0, 0, 0, 0.4) 0px 2px 4px,
+            rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+            rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  
+          transform: scale(1.01);
+        }
+  
+        &.content {
+          p {
+            font-size: 15px;
+            font-weight: 400;
+          }
+        }
+      }
+  
+      .container-information {
+        display: flex;
+  
+        justify-content: space-between;
+
+        max-width: 600px;
+  
+        .container-seller {
+          width: 285px;
+  
+          &.content {
+            span {
+              font-size: 20px;
+            }
+          }
+        }
+      }
+      
+    }
+
+    .container-image {
+      padding: 25px;
+
+      img {
+        width: 100%;
+        box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+        border-radius: 25px;
+      }
+    }
+  }
+}
