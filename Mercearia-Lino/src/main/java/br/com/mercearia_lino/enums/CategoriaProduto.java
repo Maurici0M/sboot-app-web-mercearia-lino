@@ -5,5 +5,6 @@ public enum CategoriaProduto {
     LIMPEZA,
     UTENSILIOS,
     DOCES,
-    BEBIDAS
+    BEBIDAS,
+    OUTROS
 }

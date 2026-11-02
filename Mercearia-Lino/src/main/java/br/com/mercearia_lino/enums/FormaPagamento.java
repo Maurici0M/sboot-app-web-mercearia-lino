@@ -6,5 +6,6 @@ public enum FormaPagamento {
     CARTAO_CREDITO,
     CARTAO_DEBITO,
     CARTAO_ALIMENTACAO,
-    CARTAO_REFEICAO
+    CARTAO_REFEICAO,
+    OUTROS
 }
