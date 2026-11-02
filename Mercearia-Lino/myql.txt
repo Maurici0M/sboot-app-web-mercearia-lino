@@ -1,0 +1,48 @@
+/*cria o database*/
+create database db_mercearia_lino;
+
+/*ativa o database criado para ser utilizado*/
+USE db_mercearia_lino;
+
+CREATE TABLE fornecedor (
+	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	nome TEXT NOT NULL,
+    telefone TEXT,
+    site TEXT
+);
+
+CREATE TABLE produto (
+	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    fk_id_fornecedor INT NOT NULL,
+    precoUnitario double NOT NULL,
+    categoriaProduto TEXT NOT NULL,
+    quantidadeEstoque INTEGER NOT NULL,
+    unidadeMedida TEXT NOT NULL,
+    ativo TINYINT(1) DEFAULT 1,
+    
+    FOREIGN KEY (fk_id_fornecedor) REFERENCES fornecedor(id)
+);
+
+CREATE TABLE venda (
+	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	fk_id_produto INT NOT NULL,
+	quantidade INT NOT NULL,
+    formaPagemento TEXT NOT NULL,
+    data_venda DATE,
+    
+	FOREIGN KEY (fk_id_produto) REFERENCES produto(id)
+);
+
+
+/*teste de insercao*/
+INSERT INTO fornecedor(nome, telefone, site) VALUES 
+('Meu Fornecedor', "", '');
+
+select * from fornecedor;
+
+insert into produto(nome, fk_id_fornecedor, precoUnitario, categoriaProduto, quantidadeEstoque, unidadeMedida)
+VALUES
+("Maça", 1, 15.00, "FRUTAS", 1, "PACOTE");
+
+SELECT * from produto INNER JOIN fornecedor where produto.fk_id_fornecedor = fornecedor.id;
