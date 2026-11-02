@@ -13,7 +13,7 @@ const listMenu = [
   },
 
   {
-    link: "#",
+    link: "/produtos",
     icon: "akar-icons:shipping-box-02",
     name: "Estoque",
   },
