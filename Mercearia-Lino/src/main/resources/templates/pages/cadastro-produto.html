@@ -93,24 +93,36 @@
 
           <!-- Categoria -->
           <div class="col-md-6">
-            <label for="validationCustom04" class="form-label">Categoria</label>
-            <select class="form-select" id="validationCustom02" required>
-              <option selected disabled value="">Choose...</option>
-              <option>...</option>
+
+            <label for="validationCustom02" class="form-label">Categoria</label>
+
+            <select class="form-select" id="validationCustom02" name="categoria" required>
+              <option selected disabled>Escolha...</option>
+              <option
+                      th:each="categoria : ${EnumCategoriaProduto}"
+                      th:value="${categoria}"
+                      th:text="${categoria}"
+              ></option>
             </select>
-            <div class="invalid-feedback">Please select a valid state.</div>
+
+            <div class="invalid-feedback">Por favor, selecione uma opção válida!</div>
           </div>
 
           <!-- Unidade de medida -->
           <div class="col-md-6">
-            <label for="validationCustom04" class="form-label"
+            <label for="validationCustom03" class="form-label"
               >Unidade de Medida</label
             >
             <select class="form-select" id="validationCustom03" required>
-              <option selected disabled value="">Choose...</option>
-              <option>...</option>
+              <option selected disabled>Escolha...</option>
+
+              <option
+                      th:each="unidadeMedida : ${EnumUnidadeMedida}"
+                      th:value="${unidadeMedida}"
+                      th:text="${unidadeMedida}"
+              ></option>
             </select>
-            <div class="invalid-feedback">Please select a valid state.</div>
+            <div class="invalid-feedback">Por favor, selecione uma opção válida!</div>
           </div>
 
           <!-- Fornecedor -->
@@ -119,8 +131,8 @@
               >Fornecedor</label
             >
             <select class="form-select" id="validationCustom04" required>
-              <option selected disabled value="">Choose...</option>
-              <option>...</option>
+              <option selected disabled value="">Escolha...</option>
+              <option>Djalma Limp</option>
             </select>
 
             <div class="invalid-feedback">Please select a valid state.</div>
@@ -167,13 +179,13 @@
 
                     <div class="modal-body">
                       <div class="col-md-9">
-                        <label for="validationCustom01" class="form-label"
+                        <label for="validationCustom05" class="form-label"
                           >Nome do Fornecedor</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="validationCustom06"
+                          id="validationCustom05"
                           value=""
                           placeholder="Digite aqui..."
                           required
@@ -182,13 +194,13 @@
                       </div>
 
                       <div class="col-md-9">
-                        <label for="validationCustom01" class="form-label"
+                        <label for="validationCustom06" class="form-label"
                           >Telefone</label
                         >
                         <input
                           type="tel"
                           class="form-control"
-                          id="validationCustom07"
+                          id="validationCustom06"
                           value=""
                           placeholder="0800"
                         />
@@ -196,13 +208,13 @@
                       </div>
 
                       <div class="col-md-9">
-                        <label for="validationCustom01" class="form-label"
+                        <label for="validationCustom07" class="form-label"
                           >Site</label
                         >
                         <input
                           type="text"
                           class="form-control"
-                          id="validationCustom08"
+                          id="validationCustom07"
                           value=""
                           placeholder="Digite aqui..."
                         />
@@ -230,13 +242,13 @@
 
           <!-- Quantidade -->
           <div class="col-md-6">
-            <label for="validationCustom05" class="form-label"
+            <label for="validationCustom08" class="form-label"
               >Quantidade</label
             >
             <input
               type="number"
               class="form-control"
-              id="validationCustom05"
+              id="validationCustom08"
               value=""
               placeholder="0"
               required
@@ -248,13 +260,13 @@
 
           <!-- Valor unitario -->
           <div class="col-md-6">
-            <label for="validationCustom05" class="form-label"
+            <label for="validationCustom09" class="form-label"
               >Valor Unitário</label
             >
             <input
               type="number"
               class="form-control"
-              id="validationCustom06"
+              id="validationCustom09"
               value=""
               placeholder="0"
               required
