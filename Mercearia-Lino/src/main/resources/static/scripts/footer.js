@@ -22,7 +22,7 @@ const listItens = [
             
             {
                 text: "Estoque",
-                link: "#"
+                link: "/produtos"
             },
             
             {
