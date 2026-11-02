@@ -12,7 +12,7 @@ const listItens = [
         Navegacao: [
             {
                 text: "Home",
-                link: "/index.html"
+                link: "/"
             },
             
             {
@@ -27,7 +27,7 @@ const listItens = [
             
             {
                 text: "Cadastros",
-                link: "/pages/cadastro-produto.html"
+                link: "produtos/cadastro"
             },
             
             {
@@ -120,7 +120,7 @@ for (let index = 0; index < listItens[0].Navegacao.length; index++) {
     let listOfElements = document.createElement("li");
     
     listOfElements.innerHTML = `
-        <a href="${listItens[0].Navegacao[index].link}" target="_blank" rel="noopener noreferrer">
+        <a href="${listItens[0].Navegacao[index].link}" rel="noopener noreferrer">
             ${listItens[0].Navegacao[index].text}
         </a>
     `
