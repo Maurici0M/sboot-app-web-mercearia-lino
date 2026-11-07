@@ -24,11 +24,20 @@ public class ControllerProdutos {
     private FornecedorRepository fornecedorRepository;
 
     @GetMapping
-    public String listaProdutos(Model model) {
-        List<Produto> listaProdutos = produtoRepository.findAll();
+    public String listaProdutos(Model model, @RequestParam(value = "nome", required = false) String nome) {
 
-        model.addAttribute("listaProdutos", listaProdutos);
+        if (nome != null) {
+            List<Produto> listaProdutos = produtoRepository.findByNomeContainingIgnoreCase(nome);
 
+            model.addAttribute("listaProdutos", listaProdutos);
+
+            model.addAttribute("termoBusca", nome);
+
+        } else {
+            List<Produto> listaProdutos  = produtoRepository.findAll();
+
+            model.addAttribute("listaProdutos", listaProdutos);
+        }
 
         return "pages/produtos";
     }
