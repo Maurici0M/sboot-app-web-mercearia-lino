@@ -90,7 +90,7 @@
 
         <form class="row g-3 needs-validation" th:action="@{/produtos/salvar}" th:object="${produto}" method="post" novalidate>
           <!-- Nome do Produto -->
-          <div class="col-md-7">
+          <div class="col-md-6">
             <label for="validationCustom01" class="form-label">Nome do Produto</label>
             <input
                     type="text"
@@ -101,6 +101,11 @@
                     required
             />
             <div class="valid-feedback">Looks good!</div>
+
+          </div>
+
+          <div class="col-md-6" style="text-align: end;">
+            <a href="/produtos" class="txt_link">Visualizar produtos cadastrados</a>
           </div>
 
           <!-- Categoria -->

@@ -17,7 +17,7 @@ const listItens = [
             
             {
                 text: "Vendas",
-                link: "#"
+                link: "/vendas"
             },
             
             {
