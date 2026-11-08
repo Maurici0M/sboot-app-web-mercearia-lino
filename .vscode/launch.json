@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MerceariaLinoApplication<Mercearia-Lino>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "br.com.mercearia_lino.MerceariaLinoApplication",
+            "projectName": "Mercearia-Lino",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
