@@ -6,7 +6,7 @@ body {
         color: var(--color-text-primary);
         padding: 15px;
         text-align: center;
-        border-radius: 0px 25px;
+        border-radius: 25px;
 
         box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
       }
@@ -14,6 +14,14 @@ body {
       .row {
         &.g-3 {
           &.needs-validation {
+            .col-md-6 {
+              .txt_link {
+                text-decoration: none;
+                font-weight: 700;
+                color: var(--color-bg-sidebar);
+              }
+            }
+
             .container-btn-submit {
               display: flex;
               justify-content: end;
