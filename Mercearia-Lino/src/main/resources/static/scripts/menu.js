@@ -7,7 +7,7 @@ const listMenu = [
   },
 
   {
-    link: "#",
+    link: "/vendas",
     icon: "at-icons:shopping-cart",
     name: "Vendas",
   },
@@ -25,7 +25,7 @@ const listMenu = [
   },
 
   {
-    link: "#",
+    link: "/faturamento",
     icon: "bi-cash",
     name: "Faturamento",
   },
