@@ -83,3 +83,29 @@ body {
         }
     }
 }
+
+
+/* Pesquisa de faturamento por período */
+body .aplication .container-content .search-form.periodo-form {
+    width: 100%;
+    max-width: 740px;
+    flex-wrap: wrap;
+    white-space: normal;
+}
+
+/* Organização dos campos de data */
+.periodo-form .campo-data {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Aparência dos campos */
+body .aplication .container-content .search-form.periodo-form input[type="date"] {
+    width: 180px;
+    margin-left: 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+}

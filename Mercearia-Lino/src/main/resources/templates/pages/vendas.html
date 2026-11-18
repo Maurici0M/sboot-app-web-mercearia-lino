@@ -2,59 +2,44 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-    <title>Vendas</title>
-
-    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Nome da pagina -->
     <title>Mercearia Lino</title>
 
-    <!-- Links de estilizacao -->
-    <link rel="stylesheet" href="../style/global/style.css" />
-    <link rel="stylesheet" href="../style/global/menu.css" />
-    <link rel="stylesheet" href="../style/global/footer.css" />
+    <!-- Estilos da aplicacao -->
+    <link rel="stylesheet" href="/style/global/style.css" />
+    <link rel="stylesheet" href="/style/global/menu.css" />
+    <link rel="stylesheet" href="/style/global/footer.css" />
+    <link rel="stylesheet" href="/style/vendas.css" />
 
-    <link rel="stylesheet" href="../style/vendas.css" />
-
-    <!-- Google Fonts Icons -->
+    <!-- Icones -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
     />
 
-    <!-- Bootstap -->
+    <!-- Bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
-
-    <!-- Links de script -->
-
-    <!-- Script do Iconify Web Component -->
-    <script
-      src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"
-      defer
-    ></script>
-
-    <!-- Script do Bootstap -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
       defer
     ></script>
-
-    <!-- Scripts da aplicacao -->
-
-    <script src="../scripts/menu.js" defer></script>
-
-    <script src="../scripts/footer.js" defer></script>
+    <script
+      src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"
+      defer
+    ></script>
+    <script src="/scripts/menu.js" defer></script>
+    <script src="/scripts/footer.js" defer></script>
   </head>
+
   <body>
-    <!--Componente de Acessibilidade VLibras-->
+    <!-- Acessibilidade VLibras -->
     <div vw class="enabled">
       <div vw-access-button class="active"></div>
       <div vw-plugin-wrapper>
@@ -66,8 +51,6 @@
       new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
 
-    <!--Componente de Acessibilidade VLibras-->
-
     <!-- Menu lateral -->
     <aside class="sidebar">
       <!-- Codigo injetado via JS -->
@@ -75,106 +58,78 @@
 
     <section class="aplication">
       <div class="container-content">
-        <h1>Registrar venda (MOCK)</h1>
+        <h1>Registrar venda</h1>
+        <div id="area-alerta" aria-live="polite"></div>
 
-        <form
-          class="row g-3 needs-validation"
-          th:action="@{/vendas}"
-          th:object="${vendas}"
-          method="post"
-          novalidate
-        >
-          <!-- Nome do Produto -->
+        <!-- A compra tem uma UNICA forma de pagamento. -->
+        <form class="row g-3 needs-validation" id="formVenda" novalidate>
+          <!-- Produto -->
           <div class="col-md-6">
-            <label for="validationCustom01" class="form-label"
-              >Nome do Produto</label
-            >
-            <input
-              type="text"
-              class="form-control"
-              id="validationCustom01"
-              placeholder="Digite aqui..."
-              required
-            />
-            <div class="valid-feedback">Looks good!</div>
+            <label for="validationCustom01" class="form-label">Produto</label>
+            <select class="form-select" id="validationCustom01" name="produtoId" required>
+              <option selected disabled value="">Escolha...</option>
+              <option
+                th:each="prod : ${listaProdutos}"
+                th:value="${prod.id}"
+                th:text="${prod.nome}"
+                th:attr="data-preco=${prod.precoUnitario}"
+              ></option>
+            </select>
           </div>
 
           <!-- Quantidade -->
           <div class="col-md-4">
-            <label for="validationCustom02" class="form-label"
-              >Quantidade</label
-            >
+            <label for="validationCustom02" class="form-label">Quantidade</label>
             <input
               type="number"
               class="form-control"
               id="validationCustom02"
+              name="quantidade"
+              min="1"
+              step="1"
               placeholder="Digite aqui..."
               required
             />
-            <div class="valid-feedback">Looks good!</div>
           </div>
 
-          <!-- Tipo de Pagamento -->
+          <!-- Forma de pagamento unica para todos os itens -->
           <div class="col-md-6">
-            <label for="validationCustom03" class="form-label"
-              >Tipo de Pagamento</label
-            >
-
-            <select
-              class="form-select"
-              id="validationCustom03"
-              required
-              th:field="*{formaPagamento}"
-            >
+            <label for="validationCustom03" class="form-label">Forma de Pagamento</label>
+            <select class="form-select" id="validationCustom03" name="formaPagamento" required>
               <option selected disabled value="">Escolha...</option>
-
               <option
                 th:each="tipoPagamento : ${EnumTipoPagamento}"
                 th:value="${tipoPagamento}"
                 th:text="${tipoPagamento}"
               ></option>
             </select>
-            <div class="invalid-feedback">
-              Por favor, selecione uma opção válida!
-            </div>
+            <div class="form-text">Esta forma de pagamento vale para a compra inteira.</div>
           </div>
 
           <div
             class="col-md-6"
-            style="
-              align-items: center;
-              display: flex;
-              justify-content: space-around;
-            "
+            style="align-items: center; display: flex; justify-content: space-around"
           >
-            <button type="button" class="btn btn-primary">Adicionar</button>
+            <button type="button" id="btnAdicionar" class="btn btn-primary">Adicionar</button>
           </div>
         </form>
 
         <hr />
 
-        <table class="table">
-          <thead>
+        <!-- Tabela dos itens adicionados antes de concluir a venda -->
+        <table class="table table-striped table-hover table-bordered align-middle" id="tabelaVendas">
+          <thead class="table-dark">
             <tr>
               <th scope="col">Produto</th>
               <th scope="col">Quantidade</th>
+              <th scope="col">Forma de Pagamento</th>
               <th scope="col">Valor Unitário</th>
               <th scope="col">Valor Total</th>
+              <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">Amaciante</th>
-              <td>2</td>
-              <td>6,00</td>
-              <td>12,00</td>
-            </tr>
-            <tr>
-              <th scope="row">Biscoito</th>
-              <td>1</td>
-              <td>3,00</td>
-              <td>3,00</td>
-            </tr>
+            <!-- Os itens sao inseridos aqui pelo JavaScript -->
           </tbody>
         </table>
 
@@ -182,19 +137,261 @@
 
         <div class="subtotal">
           <h2>Subtotal</h2>
-          <p>R$ 15,00</p>
+          <p id="txtSubtotal">R$ 0,00</p>
         </div>
 
         <div class="btn-concluir">
-          <button type="button" class="btn btn-primary">Concluir</button>
+          <button type="button" id="btnConcluir" class="btn btn-primary">Concluir</button>
         </div>
-
       </div>
     </section>
 
-    <!-- Footer - Rodapé -->
     <footer class="footer">
-      <!-- Injetado via JS -->
+      <!-- Codigo injetado via JS -->
     </footer>
+
+    <script>
+      // Mantem os botoes de editar, excluir, salvar e cancelar da versao da Izabela.
+      const ICONES = {
+        editar: 'Editar',
+        excluir: 'Excluir',
+        salvar: 'Salvar',
+        cancelar: 'Cancelar'
+      };
+
+      // Identificadores desta lista existem apenas na tela; nao sao IDs do MySQL.
+      let listaItensVenda = [];
+      let proximoId = 0;
+      let idEmEdicao = null;
+
+      const selectProduto = document.getElementById('validationCustom01');
+      const inputQuantidade = document.getElementById('validationCustom02');
+      const selectPagamento = document.getElementById('validationCustom03');
+      const btnConcluir = document.getElementById('btnConcluir');
+
+      // Impede que Enter envie o formulario diretamente.
+      document.getElementById('formVenda').addEventListener('submit', event => {
+        event.preventDefault();
+      });
+
+      function formatarReais(valor) {
+        return 'R$ ' + Number(valor).toFixed(2).replace('.', ',');
+      }
+
+      function mostrarMensagem(texto, tipo) {
+        const area = document.getElementById('area-alerta');
+        area.innerHTML = '';
+
+        const alerta = document.createElement('div');
+        alerta.className = 'alert alert-' + tipo + ' alert-dismissible fade show';
+        alerta.setAttribute('role', 'alert');
+
+        const span = document.createElement('span');
+        span.textContent = texto;
+
+        const botaoFechar = document.createElement('button');
+        botaoFechar.type = 'button';
+        botaoFechar.className = 'btn-close';
+        botaoFechar.setAttribute('data-bs-dismiss', 'alert');
+        botaoFechar.setAttribute('aria-label', 'Fechar');
+
+        alerta.appendChild(span);
+        alerta.appendChild(botaoFechar);
+        area.appendChild(alerta);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function criarBotao(chaveIcone, classeBootstrap, aoClicar) {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'btn btn-sm ' + classeBootstrap + ' me-1';
+        botao.textContent = ICONES[chaveIcone];
+        botao.title = chaveIcone;
+        botao.addEventListener('click', aoClicar);
+        return botao;
+      }
+
+      function criarCelula(conteudo) {
+        const td = document.createElement('td');
+        if (typeof conteudo === 'string') {
+          td.textContent = conteudo;
+        } else {
+          td.appendChild(conteudo);
+        }
+        return td;
+      }
+
+      // Mostra os itens da compra. O pagamento agora e o mesmo para todos.
+      function criarLinhaNormal(item) {
+        const tr = document.createElement('tr');
+        tr.appendChild(criarCelula(item.nome));
+        tr.appendChild(criarCelula(String(item.quantidade)));
+        tr.appendChild(criarCelula(selectPagamento.value || 'Não selecionado'));
+        tr.appendChild(criarCelula(formatarReais(item.unitario)));
+        tr.appendChild(criarCelula(formatarReais(item.quantidade * item.unitario)));
+
+        const tdAcoes = document.createElement('td');
+        tdAcoes.appendChild(criarBotao('editar', 'btn-outline-primary', () => {
+          idEmEdicao = item.id;
+          atualizarTabela();
+        }));
+        tdAcoes.appendChild(criarBotao('excluir', 'btn-outline-danger', () => {
+          listaItensVenda = listaItensVenda.filter(i => i.id !== item.id);
+          if (idEmEdicao === item.id) idEmEdicao = null;
+          atualizarTabela();
+        }));
+        tr.appendChild(tdAcoes);
+        return tr;
+      }
+
+      // Na edicao, somente a quantidade do item muda.
+      // Para mudar a forma de pagamento, use o seletor acima da tabela.
+      function criarLinhaEdicao(item) {
+        const tr = document.createElement('tr');
+
+        const inputQtd = document.createElement('input');
+        inputQtd.type = 'number';
+        inputQtd.min = '1';
+        inputQtd.step = '1';
+        inputQtd.className = 'form-control form-control-sm';
+        inputQtd.value = item.quantidade;
+
+        tr.appendChild(criarCelula(item.nome));
+        tr.appendChild(criarCelula(inputQtd));
+        tr.appendChild(criarCelula(selectPagamento.value || 'Não selecionado'));
+        tr.appendChild(criarCelula(formatarReais(item.unitario)));
+        tr.appendChild(criarCelula(formatarReais(item.quantidade * item.unitario)));
+
+        const tdAcoes = document.createElement('td');
+        tdAcoes.appendChild(criarBotao('salvar', 'btn-success', () => {
+          const novaQuantidade = Number(inputQtd.value);
+          if (!Number.isInteger(novaQuantidade) || novaQuantidade <= 0) {
+            mostrarMensagem('Informe uma quantidade inteira maior que zero.', 'danger');
+            return;
+          }
+          item.quantidade = novaQuantidade;
+          idEmEdicao = null;
+          atualizarTabela();
+        }));
+        tdAcoes.appendChild(criarBotao('cancelar', 'btn-secondary', () => {
+          idEmEdicao = null;
+          atualizarTabela();
+        }));
+        tr.appendChild(tdAcoes);
+        return tr;
+      }
+
+      function atualizarTabela() {
+        const tbody = document.querySelector('#tabelaVendas tbody');
+        tbody.innerHTML = '';
+        let subtotal = 0;
+
+        listaItensVenda.forEach(item => {
+          subtotal += item.quantidade * item.unitario;
+          const linha = item.id === idEmEdicao
+            ? criarLinhaEdicao(item)
+            : criarLinhaNormal(item);
+          tbody.appendChild(linha);
+        });
+
+        document.getElementById('txtSubtotal').textContent = formatarReais(subtotal);
+      }
+
+      // Se o pagamento mudar, atualiza a coluna para todos os itens.
+      selectPagamento.addEventListener('change', atualizarTabela);
+
+      // ===== Adicionar um produto a lista =====
+      document.getElementById('btnAdicionar').addEventListener('click', () => {
+        if (idEmEdicao !== null) {
+          mostrarMensagem('Salve ou cancele a edição antes de adicionar outro item.', 'danger');
+          return;
+        }
+
+        if (!selectProduto.value) {
+          mostrarMensagem('Por favor, selecione um produto.', 'danger');
+          return;
+        }
+
+        const quantidade = Number(inputQuantidade.value);
+        if (!Number.isInteger(quantidade) || quantidade <= 0) {
+          mostrarMensagem('Informe uma quantidade inteira maior que zero.', 'danger');
+          return;
+        }
+
+        const opcao = selectProduto.options[selectProduto.selectedIndex];
+        const unitario = Number(String(opcao.dataset.preco || '').replace(',', '.'));
+        if (!Number.isFinite(unitario) || unitario <= 0) {
+          mostrarMensagem('O produto selecionado está com preço inválido.', 'danger');
+          return;
+        }
+
+        listaItensVenda.push({
+          id: proximoId++,
+          produtoId: Number(selectProduto.value),
+          nome: opcao.textContent.trim(),
+          unitario: unitario,
+          quantidade: quantidade
+        });
+
+        atualizarTabela();
+        selectProduto.value = '';
+        inputQuantidade.value = '';
+        // O pagamento NAO e limpo: vale para todos os itens desta compra.
+      });
+
+      // ===== Concluir a compra inteira (um ID de venda) =====
+      btnConcluir.addEventListener('click', async () => {
+        if (listaItensVenda.length === 0) {
+          mostrarMensagem('Adicione pelo menos um produto antes de concluir a venda.', 'danger');
+          return;
+        }
+        if (idEmEdicao !== null) {
+          mostrarMensagem('Salve ou cancele a edição antes de concluir.', 'danger');
+          return;
+        }
+        if (!selectPagamento.value) {
+          mostrarMensagem('Selecione a forma de pagamento da compra.', 'danger');
+          return;
+        }
+
+        // O ControllerVendas recebe um pedido com formaPagamento e lista de itens.
+        const pedido = {
+          formaPagamento: selectPagamento.value,
+          itens: listaItensVenda.map(item => ({
+            produtoId: item.produtoId,
+            quantidade: item.quantidade
+          }))
+        };
+
+        btnConcluir.disabled = true;
+        try {
+          const resposta = await fetch('/vendas/concluir', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pedido)
+          });
+
+          const mensagem = await resposta.text();
+          if (!resposta.ok) {
+            mostrarMensagem('Erro ao salvar: ' + mensagem, 'danger');
+            return;
+          }
+
+          mostrarMensagem(mensagem || 'Venda concluída com sucesso!', 'success');
+          listaItensVenda = [];
+          idEmEdicao = null;
+          selectProduto.value = '';
+          inputQuantidade.value = '';
+          selectPagamento.value = '';
+          atualizarTabela();
+        } catch (erro) {
+          console.error('Erro ao concluir venda:', erro);
+          mostrarMensagem('Não foi possível comunicar com o servidor.', 'danger');
+        } finally {
+          btnConcluir.disabled = false;
+        }
+      });
+    </script>
   </body>
 </html>

@@ -6,5 +6,6 @@ public enum CategoriaProduto {
     UTENSILIOS,
     DOCES,
     BEBIDAS,
+    FRUTAS,
     OUTROS
 }

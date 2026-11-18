@@ -7,5 +7,6 @@ public enum UnidadeMedida {
     QUILO,
     GRAMA,
     METRO,
+    PACOTE,
     OUTRO
 }
