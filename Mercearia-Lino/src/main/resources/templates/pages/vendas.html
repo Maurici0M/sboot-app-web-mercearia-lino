@@ -2,56 +2,44 @@
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
-    <title>Vendas</title>
-
-    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Nome da pagina -->
     <title>Mercearia Lino</title>
 
-    <!-- Links de estilizacao -->
-    <link rel="stylesheet" href="../style/global/style.css" />
-    <link rel="stylesheet" href="../style/global/menu.css" />
-    <link rel="stylesheet" href="../style/global/footer.css" />
+    <!-- Estilos da aplicacao -->
+    <link rel="stylesheet" href="/style/global/style.css" />
+    <link rel="stylesheet" href="/style/global/menu.css" />
+    <link rel="stylesheet" href="/style/global/footer.css" />
+    <link rel="stylesheet" href="/style/vendas.css" />
 
-    <link rel="stylesheet" href="../style/vendas.css" />
-
-    <!-- Google Fonts Icons -->
+    <!-- Icones -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
     />
 
-    <!-- Bootstap -->
+    <!-- Bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
-
-    <!-- Links de script -->
-
-    <!-- Script do Iconify Web Component -->
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" defer></script>
-
-    <!-- Script do Bootstap -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
       defer
     ></script>
-
-    <!-- Scripts da aplicacao -->
-
-    <script src="../scripts/menu.js" defer></script>
-
-    <script src="../scripts/footer.js" defer></script>
+    <script
+      src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"
+      defer
+    ></script>
+    <script src="/scripts/menu.js" defer></script>
+    <script src="/scripts/footer.js" defer></script>
   </head>
+
   <body>
-    <!--Componente de Acessibilidade VLibras-->
+    <!-- Acessibilidade VLibras -->
     <div vw class="enabled">
       <div vw-access-button class="active"></div>
       <div vw-plugin-wrapper>
@@ -63,8 +51,6 @@
       new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
 
-    <!--Componente de Acessibilidade VLibras-->
-
     <!-- Menu lateral -->
     <aside class="sidebar">
       <!-- Codigo injetado via JS -->
@@ -73,21 +59,21 @@
     <section class="aplication">
       <div class="container-content">
         <h1>Registrar venda</h1>
-         <div id="area-alerta"></div>
+        <div id="area-alerta" aria-live="polite"></div>
 
-        <form
-          class="row g-3 needs-validation"
-          th:action="@{/vendas/salvar}"
-          th:object="${vendas}"
-          method="post"
-          novalidate
-        >
-          <!-- Nome do Produto -->
+        <!-- A compra tem uma UNICA forma de pagamento. -->
+        <form class="row g-3 needs-validation" id="formVenda" novalidate>
+          <!-- Produto -->
           <div class="col-md-6">
             <label for="validationCustom01" class="form-label">Produto</label>
-            <select class="form-select" id="validationCustom01" th:field="*{produto}" required>
+            <select class="form-select" id="validationCustom01" name="produtoId" required>
               <option selected disabled value="">Escolha...</option>
-              <option th:each="prod : ${listaProdutos}" th:value="${prod.id}" th:text="${prod.nome}" th:attr="data-preco=${prod.precoUnitario}"></option>
+              <option
+                th:each="prod : ${listaProdutos}"
+                th:value="${prod.id}"
+                th:text="${prod.nome}"
+                th:attr="data-preco=${prod.precoUnitario}"
+              ></option>
             </select>
           </div>
 
@@ -98,45 +84,31 @@
               type="number"
               class="form-control"
               id="validationCustom02"
-              th:field="*{quantidade}"
+              name="quantidade"
               min="1"
+              step="1"
               placeholder="Digite aqui..."
               required
-           />
-        </div>
+            />
+          </div>
 
-          <!-- Tipo de Pagamento -->
+          <!-- Forma de pagamento unica para todos os itens -->
           <div class="col-md-6">
-            <label for="validationCustom03" class="form-label"
-              >Tipo de Pagamento</label
-            >
-
-            <select
-              class="form-select"
-              id="validationCustom03"
-              required
-              th:field="*{formaPagamento}"
-            >
+            <label for="validationCustom03" class="form-label">Forma de Pagamento</label>
+            <select class="form-select" id="validationCustom03" name="formaPagamento" required>
               <option selected disabled value="">Escolha...</option>
-
               <option
                 th:each="tipoPagamento : ${EnumTipoPagamento}"
                 th:value="${tipoPagamento}"
                 th:text="${tipoPagamento}"
               ></option>
             </select>
-            <div class="invalid-feedback">
-              Por favor, selecione uma opção válida!
-            </div>
+            <div class="form-text">Esta forma de pagamento vale para a compra inteira.</div>
           </div>
 
           <div
             class="col-md-6"
-            style="
-              align-items: center;
-              display: flex;
-              justify-content: space-around;
-            "
+            style="align-items: center; display: flex; justify-content: space-around"
           >
             <button type="button" id="btnAdicionar" class="btn btn-primary">Adicionar</button>
           </div>
@@ -144,6 +116,7 @@
 
         <hr />
 
+        <!-- Tabela dos itens adicionados antes de concluir a venda -->
         <table class="table table-striped table-hover table-bordered align-middle" id="tabelaVendas">
           <thead class="table-dark">
             <tr>
@@ -152,11 +125,11 @@
               <th scope="col">Forma de Pagamento</th>
               <th scope="col">Valor Unitário</th>
               <th scope="col">Valor Total</th>
-               <th scope="col">Ações</th>
+              <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-           <!-- Os itens adicionados aparecerão aqui dinamicamente -->
+            <!-- Os itens sao inseridos aqui pelo JavaScript -->
           </tbody>
         </table>
 
@@ -170,19 +143,15 @@
         <div class="btn-concluir">
           <button type="button" id="btnConcluir" class="btn btn-primary">Concluir</button>
         </div>
-
       </div>
     </section>
 
-    <!-- Footer - Rodapé -->
     <footer class="footer">
-      <!-- Injetado via JS -->
+      <!-- Codigo injetado via JS -->
     </footer>
 
     <script>
-      // ===== Textos dos botões da tabela =====
-      // Quando seus amigos passarem o ícone, troque só estas linhas.
-      // Exemplo com ícone: editar: '<iconify-icon icon="mdi:pencil"></iconify-icon>'
+      // Mantem os botoes de editar, excluir, salvar e cancelar da versao da Izabela.
       const ICONES = {
         editar: 'Editar',
         excluir: 'Excluir',
@@ -190,17 +159,25 @@
         cancelar: 'Cancelar'
       };
 
-      // Cada item: { id, nome, unitario, dados: {o que vai para o banco} }
+      // Identificadores desta lista existem apenas na tela; nao sao IDs do MySQL.
       let listaItensVenda = [];
       let proximoId = 0;
-      let idEmEdicao = null; // id do item que está sendo editado (ou null)
+      let idEmEdicao = null;
+
+      const selectProduto = document.getElementById('validationCustom01');
+      const inputQuantidade = document.getElementById('validationCustom02');
+      const selectPagamento = document.getElementById('validationCustom03');
+      const btnConcluir = document.getElementById('btnConcluir');
+
+      // Impede que Enter envie o formulario diretamente.
+      document.getElementById('formVenda').addEventListener('submit', event => {
+        event.preventDefault();
+      });
 
       function formatarReais(valor) {
-        return 'R$ ' + valor.toFixed(2).replace('.', ',');
+        return 'R$ ' + Number(valor).toFixed(2).replace('.', ',');
       }
 
-      // Mostra o alerta no mesmo estilo da tela de cadastro de produtos
-      // tipo: 'success' (verde) ou 'danger' (vermelho)
       function mostrarMensagem(texto, tipo) {
         const area = document.getElementById('area-alerta');
         area.innerHTML = '';
@@ -216,7 +193,7 @@
         botaoFechar.type = 'button';
         botaoFechar.className = 'btn-close';
         botaoFechar.setAttribute('data-bs-dismiss', 'alert');
-        botaoFechar.setAttribute('aria-label', 'Close');
+        botaoFechar.setAttribute('aria-label', 'Fechar');
 
         alerta.appendChild(span);
         alerta.appendChild(botaoFechar);
@@ -225,12 +202,11 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
-      // Cria um botão pequeno da tabela
       function criarBotao(chaveIcone, classeBootstrap, aoClicar) {
         const botao = document.createElement('button');
         botao.type = 'button';
         botao.className = 'btn btn-sm ' + classeBootstrap + ' me-1';
-        botao.innerHTML = ICONES[chaveIcone];
+        botao.textContent = ICONES[chaveIcone];
         botao.title = chaveIcone;
         botao.addEventListener('click', aoClicar);
         return botao;
@@ -246,14 +222,14 @@
         return td;
       }
 
-      // Linha normal (somente leitura)
+      // Mostra os itens da compra. O pagamento agora e o mesmo para todos.
       function criarLinhaNormal(item) {
         const tr = document.createElement('tr');
         tr.appendChild(criarCelula(item.nome));
-        tr.appendChild(criarCelula(String(item.dados.quantidade)));
-        tr.appendChild(criarCelula(item.dados.formaPagamento));
+        tr.appendChild(criarCelula(String(item.quantidade)));
+        tr.appendChild(criarCelula(selectPagamento.value || 'Não selecionado'));
         tr.appendChild(criarCelula(formatarReais(item.unitario)));
-        tr.appendChild(criarCelula(formatarReais(item.dados.valorVenda)));
+        tr.appendChild(criarCelula(formatarReais(item.quantidade * item.unitario)));
 
         const tdAcoes = document.createElement('td');
         tdAcoes.appendChild(criarBotao('editar', 'btn-outline-primary', () => {
@@ -269,46 +245,32 @@
         return tr;
       }
 
-      // Linha em modo de edição (quantidade e pagamento editáveis)
+      // Na edicao, somente a quantidade do item muda.
+      // Para mudar a forma de pagamento, use o seletor acima da tabela.
       function criarLinhaEdicao(item) {
         const tr = document.createElement('tr');
 
-        // quantidade
         const inputQtd = document.createElement('input');
         inputQtd.type = 'number';
         inputQtd.min = '1';
+        inputQtd.step = '1';
         inputQtd.className = 'form-control form-control-sm';
-        inputQtd.value = item.dados.quantidade;
+        inputQtd.value = item.quantidade;
 
-        // forma de pagamento (usa as mesmas opções do formulário)
-        const selectPag = document.createElement('select');
-        selectPag.className = 'form-select form-select-sm';
-        document.querySelectorAll('#validationCustom03 option').forEach(opcao => {
-          if (opcao.value) {
-            const nova = document.createElement('option');
-            nova.value = opcao.value;
-            nova.textContent = opcao.textContent;
-            selectPag.appendChild(nova);
-          }
-        });
-        selectPag.value = item.dados.formaPagamento;
-
-        tr.appendChild(criarCelula(item.nome));          // produto: fixo
+        tr.appendChild(criarCelula(item.nome));
         tr.appendChild(criarCelula(inputQtd));
-        tr.appendChild(criarCelula(selectPag));
-        tr.appendChild(criarCelula(formatarReais(item.unitario))); // valor unitário: fixo
-        tr.appendChild(criarCelula(formatarReais(item.dados.valorVenda)));
+        tr.appendChild(criarCelula(selectPagamento.value || 'Não selecionado'));
+        tr.appendChild(criarCelula(formatarReais(item.unitario)));
+        tr.appendChild(criarCelula(formatarReais(item.quantidade * item.unitario)));
 
         const tdAcoes = document.createElement('td');
         tdAcoes.appendChild(criarBotao('salvar', 'btn-success', () => {
-          const novaQtd = parseInt(inputQtd.value);
-          if (isNaN(novaQtd) || novaQtd <= 0) {
-            mostrarMensagem('Informe uma quantidade válida (maior que zero).', 'danger');
+          const novaQuantidade = Number(inputQtd.value);
+          if (!Number.isInteger(novaQuantidade) || novaQuantidade <= 0) {
+            mostrarMensagem('Informe uma quantidade inteira maior que zero.', 'danger');
             return;
           }
-          item.dados.quantidade = novaQtd;
-          item.dados.formaPagamento = selectPag.value;
-          item.dados.valorVenda = novaQtd * item.unitario; // recalcula o total
+          item.quantidade = novaQuantidade;
           idEmEdicao = null;
           atualizarTabela();
         }));
@@ -320,97 +282,115 @@
         return tr;
       }
 
-      // Redesenha a tabela e o subtotal
       function atualizarTabela() {
         const tbody = document.querySelector('#tabelaVendas tbody');
         tbody.innerHTML = '';
         let subtotal = 0;
 
         listaItensVenda.forEach(item => {
-          subtotal += item.dados.valorVenda;
-          const linha = (item.id === idEmEdicao) ? criarLinhaEdicao(item) : criarLinhaNormal(item);
+          subtotal += item.quantidade * item.unitario;
+          const linha = item.id === idEmEdicao
+            ? criarLinhaEdicao(item)
+            : criarLinhaNormal(item);
           tbody.appendChild(linha);
         });
 
         document.getElementById('txtSubtotal').textContent = formatarReais(subtotal);
       }
 
-      // ===== Botão Adicionar =====
-      document.getElementById('btnAdicionar').addEventListener('click', function () {
-        const selectProduto = document.getElementById('validationCustom01');
-        const selectPagamento = document.getElementById('validationCustom03');
-        const inputQuantidade = document.getElementById('validationCustom02');
+      // Se o pagamento mudar, atualiza a coluna para todos os itens.
+      selectPagamento.addEventListener('change', atualizarTabela);
+
+      // ===== Adicionar um produto a lista =====
+      document.getElementById('btnAdicionar').addEventListener('click', () => {
+        if (idEmEdicao !== null) {
+          mostrarMensagem('Salve ou cancele a edição antes de adicionar outro item.', 'danger');
+          return;
+        }
 
         if (!selectProduto.value) {
           mostrarMensagem('Por favor, selecione um produto.', 'danger');
           return;
         }
 
-        const quantidade = parseInt(inputQuantidade.value);
-        const formaPagamento = selectPagamento.value;
-        if (isNaN(quantidade) || quantidade <= 0 || !formaPagamento) {
-          mostrarMensagem('Por favor, informe uma quantidade válida (maior que zero) e selecione a forma de pagamento.', 'danger');
+        const quantidade = Number(inputQuantidade.value);
+        if (!Number.isInteger(quantidade) || quantidade <= 0) {
+          mostrarMensagem('Informe uma quantidade inteira maior que zero.', 'danger');
           return;
         }
 
         const opcao = selectProduto.options[selectProduto.selectedIndex];
-        const valorUnitario = parseFloat(opcao.getAttribute('data-preco')) || 0.0;
+        const unitario = Number(String(opcao.dataset.preco || '').replace(',', '.'));
+        if (!Number.isFinite(unitario) || unitario <= 0) {
+          mostrarMensagem('O produto selecionado está com preço inválido.', 'danger');
+          return;
+        }
 
         listaItensVenda.push({
           id: proximoId++,
-          nome: opcao.text,
-          unitario: valorUnitario,
-          dados: {
-            produto: { id: parseInt(selectProduto.value) },
-            quantidade: quantidade,
-            formaPagamento: formaPagamento.trim(),
-            valorVenda: quantidade * valorUnitario
-          }
+          produtoId: Number(selectProduto.value),
+          nome: opcao.textContent.trim(),
+          unitario: unitario,
+          quantidade: quantidade
         });
 
         atualizarTabela();
-
         selectProduto.value = '';
         inputQuantidade.value = '';
-        selectPagamento.value = '';
+        // O pagamento NAO e limpo: vale para todos os itens desta compra.
       });
 
-      // ===== Botão Concluir =====
-      document.getElementById('btnConcluir').addEventListener('click', function () {
+      // ===== Concluir a compra inteira (um ID de venda) =====
+      btnConcluir.addEventListener('click', async () => {
         if (listaItensVenda.length === 0) {
-          mostrarMensagem('Adicione pelo menos um item à tabela antes de concluir a venda.', 'danger');
+          mostrarMensagem('Adicione pelo menos um produto antes de concluir a venda.', 'danger');
           return;
         }
         if (idEmEdicao !== null) {
-          mostrarMensagem('Salve ou cancele a edição do item antes de concluir.', 'danger');
+          mostrarMensagem('Salve ou cancele a edição antes de concluir.', 'danger');
+          return;
+        }
+        if (!selectPagamento.value) {
+          mostrarMensagem('Selecione a forma de pagamento da compra.', 'danger');
           return;
         }
 
-        const btn = this;
-        btn.disabled = true; // evita clicar duas vezes e salvar a venda repetida
+        // O ControllerVendas recebe um pedido com formaPagamento e lista de itens.
+        const pedido = {
+          formaPagamento: selectPagamento.value,
+          itens: listaItensVenda.map(item => ({
+            produtoId: item.produtoId,
+            quantidade: item.quantidade
+          }))
+        };
 
-        fetch('/vendas/salvar-lote', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(listaItensVenda.map(item => item.dados))
-        })
-          .then(async response => {
-            if (response.ok) {
-              mostrarMensagem('Venda concluída com sucesso!', 'success');
-              listaItensVenda = [];
-              atualizarTabela();
-            } else {
-              const erro = await response.text();
-              mostrarMensagem('Erro ao salvar: ' + erro, 'danger');
-            }
-          })
-          .catch(error => {
-            console.error('Erro:', error);
-            mostrarMensagem('Ocorreu um erro de comunicação com o servidor.', 'danger');
-          })
-          .finally(() => {
-            btn.disabled = false;
+        btnConcluir.disabled = true;
+        try {
+          const resposta = await fetch('/vendas/concluir', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pedido)
           });
+
+          const mensagem = await resposta.text();
+          if (!resposta.ok) {
+            mostrarMensagem('Erro ao salvar: ' + mensagem, 'danger');
+            return;
+          }
+
+          mostrarMensagem(mensagem || 'Venda concluída com sucesso!', 'success');
+          listaItensVenda = [];
+          idEmEdicao = null;
+          selectProduto.value = '';
+          inputQuantidade.value = '';
+          selectPagamento.value = '';
+          atualizarTabela();
+        } catch (erro) {
+          console.error('Erro ao concluir venda:', erro);
+          mostrarMensagem('Não foi possível comunicar com o servidor.', 'danger');
+        } finally {
+          btnConcluir.disabled = false;
+        }
       });
     </script>
   </body>

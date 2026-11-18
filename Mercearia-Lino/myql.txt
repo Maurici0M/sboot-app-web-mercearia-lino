@@ -36,5 +36,66 @@ CREATE TABLE venda (
 );
 
 
+/* ALTERACOES CYNTIA ☆*: .｡. o(≧▽≦)o .｡.:*☆
+
+
+/* Cria o database */
+CREATE DATABASE IF NOT EXISTS db_mercearia_lino;
+
+/* Ativa o database criado para ser utilizado */
+USE db_mercearia_lino;
+
+
+/* TABELA DE FORNECEDORES */
+CREATE TABLE fornecedor (
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    telefone TEXT,
+    site TEXT
+);
+
+
+/* TABELA DE PRODUTOS */
+CREATE TABLE produto (
+    id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    fk_id_fornecedor INT NOT NULL,
+    precoUnitario DOUBLE NOT NULL,
+    categoriaProduto TEXT NOT NULL,
+    quantidadeEstoque INTEGER NOT NULL,
+    unidadeMedida TEXT NOT NULL,
+    ativo TINYINT(1) DEFAULT 1,
+
+    FOREIGN KEY (fk_id_fornecedor)
+        REFERENCES fornecedor(id)
+);
+
+
+/* TABELA DE VENDAS */
+CREATE TABLE venda (
+    id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    data DATE NOT NULL,
+    formapagamento VARCHAR(50) NOT NULL,
+    total DECIMAL(10,2) NOT NULL
+);
+
+
+/* TABELA DE ITENS DA VENDA */
+CREATE TABLE item_venda (
+    id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    id_venda BIGINT NOT NULL,
+    fk_id_produto INT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(38,2) NOT NULL,
+    subtotal DECIMAL(38,2) NOT NULL,
+
+    FOREIGN KEY (id_venda)
+        REFERENCES venda(id),
+
+    FOREIGN KEY (fk_id_produto)
+        REFERENCES produto(id)
+);
+*/
+
 /*teste de insercao*/
 INSERT INTO
