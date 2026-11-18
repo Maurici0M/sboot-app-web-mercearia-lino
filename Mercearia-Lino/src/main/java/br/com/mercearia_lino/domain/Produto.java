@@ -16,44 +16,26 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String nome;
 
-    // cardinalidade das tabelas
     @ManyToOne
     @JoinColumn(name = "fk_id_fornecedor", nullable = false)
     private Fornecedor fornecedor;
 
     @Column(name = "precounitario", nullable = false)
-    private double precoUnitario;
+    private Double precoUnitario;
 
-    @Enumerated(EnumType.STRING) //transforma a enum que temos em string para salvar no db
+    @Enumerated(EnumType.STRING)
     @Column(name = "categoriaproduto", nullable = false, columnDefinition = "TEXT")
     private CategoriaProduto categoria;
 
     @Column(name = "quantidadeestoque", nullable = false)
-    private int quantidadeEstoque;
+    private Integer quantidadeEstoque;
 
-    @Enumerated(EnumType.STRING) //transforma a enum que temos em string para salvar no db
+    @Enumerated(EnumType.STRING)
     @Column(name = "unidademedida", nullable = false, columnDefinition = "TEXT")
     private UnidadeMedida unidadeMedida;
-
-    
-    public Produto(
-            String nome,
-            Fornecedor fornecedor,
-            double precoUnitario,
-            CategoriaProduto categoriaProduto,
-            int quantidadeEstoque,
-            UnidadeMedida unidadeMedida
-    ) {
-        this.nome = nome;
-        this.fornecedor = fornecedor;
-        this.precoUnitario = precoUnitario;
-        this.categoria = categoriaProduto;
-        this.quantidadeEstoque = quantidadeEstoque;
-        this.unidadeMedida = unidadeMedida;
-    }
 }
