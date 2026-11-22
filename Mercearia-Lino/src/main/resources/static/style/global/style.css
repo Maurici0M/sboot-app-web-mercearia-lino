@@ -24,7 +24,9 @@
 }
 
 body {
+
   .aplication {
+    background: #F3F3FE;
     margin-left: var(--side-bar-width-expand);
 
     transition: all ease-in-out 0.5s;
@@ -38,6 +40,12 @@ body {
       flex-direction: column;
       padding: 5%;
       gap: 25px;
+
+      &.domo {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+      }
 
       h1 {
         font-weight: 600;

@@ -65,7 +65,7 @@
 
         <hr />
 
-        <h3>Resumo de Hoje</h3>
+        <h3>Resumo da Loja</h3>
 
         <div class="container-information">
           <a class="container-seller" href="/faturamento">
@@ -75,7 +75,12 @@
                 Faturamento
               </span>
 
-              <p>R$ 150,00</p>
+              <p th:text="${valorVendasHoje != null ? 'Hoje: ' + #numbers.formatCurrency(valorVendasHoje) : 'Sem vendas hoje.'}">0</p>
+                            
+              <p th:text="${valorVendasSemana != null ? 'Esta semana: ' + #numbers.formatCurrency(valorVendasSemana) : 'Sem vendas nesta semana.'}">0</p>
+              
+              <p th:text="${valorVendasMes != null ? 'Este mês: ' + #numbers.formatCurrency(valorVendasMes) : 'Sem vendas neste mês.'}">0</p>
+
             </div>
           </a>
 
