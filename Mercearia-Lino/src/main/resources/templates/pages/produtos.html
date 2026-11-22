@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-br">
   <head>
@@ -69,7 +68,6 @@
     <!-- Corpo do site -->
     <section class="aplication">
       <div class="container-content">
-
         <h1>Estoque de Produtos</h1>
 
         <!-- NOVO: Mensagem de sucesso -->
@@ -102,135 +100,131 @@
           ></button>
         </div>
 
-        <!-- Search Form -->
-        <div>
-          <form
-            action="#"
-            class="search-form"
-            th:action="@{/produtos}"
-            method="get"
+        <div class="container-content domo">
+          <a
+            th:href="${termoBusca != null and !#strings.isEmpty(termoBusca)}
+                ? @{/produtos/relatorio(nome=${termoBusca})}
+                : @{/produtos/relatorio}"
+            class="btn btn-success"
           >
-            <span class="material-symbols-rounded">
-              search
-            </span>
+            Baixar Relatório (CSV Para Power BI)
+          </a>
 
-            <input
-              type="text"
-              placeholder="Pesquisar..."
-              required
-              name="nome"
-              th:value="${termoBusca}"
-            />
+          <!-- Search Form -->
+          <div>
+            <form
+              action="#"
+              class="search-form"
+              th:action="@{/produtos}"
+              method="get"
+            >
+              <span class="material-symbols-rounded"> search </span>
 
-            <button type="submit" class="btn btn-primary">
-              Pesquisar
-            </button>
-          </form>
+              <input
+                type="text"
+                placeholder="Pesquisar..."
+                required
+                name="nome"
+                th:value="${termoBusca}"
+              />
 
-          <a href="/produtos">Zerar</a>
-        </div>
+              <button type="submit" class="btn btn-primary">Pesquisar</button>
+            </form>
 
-        <!-- Tabela estilizada com Bootstrap -->
-        <table
-          class="table table-striped table-hover table-bordered align-middle"
-        >
-          <thead class="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Categoria</th>
-              <th>Fornecedor</th>
-              <th>Preço Unitário</th>
-              <th>Estoque</th>
-              <th>Valor Estocado</th>
+            <a href="/produtos">Zerar</a>
+          </div>
 
-              <!-- NOVO: Coluna de ações -->
-              <th>Ações</th>
-            </tr>
-          </thead>
+          <!-- Tabela estilizada com Bootstrap -->
+          <table
+            class="table table-striped table-hover table-bordered align-middle"
+          >
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Fornecedor</th>
+                <th>Preço Unitário</th>
+                <th>Estoque</th>
+                <th>Valor Estocado</th>
 
-          <tbody>
-            <!-- Loop do Thymeleaf -->
-            <tr th:each="produto : ${listaProdutos}">
+                <!-- NOVO: Coluna de ações -->
+                <th>Ações</th>
+              </tr>
+            </thead>
 
-              <td th:text="${produto.id}">1</td>
+            <tbody>
+              <!-- Loop do Thymeleaf -->
+              <tr th:each="produto : ${listaProdutos}">
+                <td th:text="${produto.id}">1</td>
 
-              <td th:text="${produto.nome}">
-                Nome do Produto
-              </td>
+                <td th:text="${produto.nome}">Nome do Produto</td>
 
-              <td th:text="${produto.categoria}">
-                CATEGORIA
-              </td>
+                <td th:text="${produto.categoria}">CATEGORIA</td>
 
-              <td
-                th:text="${produto.fornecedor != null ? produto.fornecedor.nome : 'Sem Fornecedor'}"
-              >
-                Fornecedor
-              </td>
+                <td
+                  th:text="${produto.fornecedor != null ? produto.fornecedor.nome : 'Sem Fornecedor'}"
+                >
+                  Fornecedor
+                </td>
 
-              <td
-                th:text="'R$ ' + ${#numbers.formatDecimal(produto.precoUnitario, 1, 'POINT', 2, 'COMMA')}"
-              >
-                R$ 0,00
-              </td>
+                <td
+                  th:text="'R$ ' + ${#numbers.formatDecimal(produto.precoUnitario, 1, 'POINT', 2, 'COMMA')}"
+                >
+                  R$ 0,00
+                </td>
 
-              <td th:text="${produto.quantidadeEstoque}">
-                0
-              </td>
+                <td th:text="${produto.quantidadeEstoque}">0</td>
 
-              <td
-                th:text="'R$ ' + ${#numbers.formatDecimal(produto.precoUnitario * produto.quantidadeEstoque, 1, 'POINT', 2, 'COMMA')}"
-              >
-                Preço Estoque
-              </td>
+                <td
+                  th:text="'R$ ' + ${#numbers.formatDecimal(produto.precoUnitario * produto.quantidadeEstoque, 1, 'POINT', 2, 'COMMA')}"
+                >
+                  Preço Estoque
+                </td>
 
-              <!-- NOVO: Botões Editar e Excluir -->
-              <td>
-                <div class="d-flex gap-2">
-
-                  <!-- Botão Editar -->
-                  <a
-                    th:href="@{/produtos/editar/{id}(id=${produto.id})}"
-                    class="btn btn-primary btn-sm"
-                    title="Editar produto"
-                  >
-                    <span class="material-symbols-rounded">
-                      edit
-                    </span>
-                  </a>
-
-                  <!-- Botão Excluir -->
-                  <form
-                    th:action="@{/produtos/excluir/{id}(id=${produto.id})}"
-                    method="post"
-                    onsubmit="return confirm('Deseja realmente excluir este produto?');"
-                  >
-                    <button
-                      type="submit"
-                      class="btn btn-danger btn-sm"
-                      title="Excluir produto"
+                <!-- NOVO: Botões Editar e Excluir -->
+                <td>
+                  <div class="d-flex gap-2">
+                    <!-- Botão Editar -->
+                    <a
+                      th:href="@{/produtos/editar/{id}(id=${produto.id})}"
+                      class="btn btn-primary btn-sm"
+                      title="Editar produto"
                     >
-                      <span class="material-symbols-rounded">
-                        delete
-                      </span>
-                    </button>
-                  </form>
+                      <span class="material-symbols-rounded"> edit </span>
+                    </a>
 
-                </div>
-              </td>
+                    <!-- Botão Excluir -->
+                    <form
+                      th:action="@{/produtos/excluir/{id}(id=${produto.id})}"
+                      method="post"
+                      onsubmit="
+                        return confirm(
+                          'Deseja realmente excluir este produto?',
+                        );
+                      "
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-danger btn-sm"
+                        title="Excluir produto"
+                      >
+                        <span class="material-symbols-rounded"> delete </span>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
 
-            </tr>
-
-            <!-- Mensagem caso a lista esteja vazia -->
-            <tr th:if="${#lists.isEmpty(listaProdutos)}">
-              <td colspan="8" class="text-center text-muted">
-                Nenhum produto cadastrado até o momento.
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
+              <!-- Mensagem caso a lista esteja vazia -->
+              <tr th:if="${#lists.isEmpty(listaProdutos)}">
+                <td colspan="8" class="text-center text-muted">
+                  Nenhum produto cadastrado até o momento.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 

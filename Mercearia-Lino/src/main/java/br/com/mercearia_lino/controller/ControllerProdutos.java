@@ -6,11 +6,16 @@ import br.com.mercearia_lino.enums.UnidadeMedida;
 import br.com.mercearia_lino.repository.FornecedorRepository;
 import br.com.mercearia_lino.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
@@ -23,15 +28,13 @@ public class ControllerProdutos {
     @Autowired
     private FornecedorRepository fornecedorRepository;
 
-    // LISTAR PRODUTOS
     @GetMapping
     public String listaProdutos(
             Model model,
             @RequestParam(value = "nome", required = false) String nome) {
 
         if (nome != null) {
-            List<Produto> listaProdutos =
-                produtoRepository.findByNomeContainingIgnoreCase(nome);
+            List<Produto> listaProdutos = produtoRepository.findByNomeContainingIgnoreCase(nome);
 
             model.addAttribute("listaProdutos", listaProdutos);
             model.addAttribute("termoBusca", nome);
@@ -44,7 +47,45 @@ public class ControllerProdutos {
         return "pages/produtos";
     }
 
-    // ABRIR CADASTRO
+    @GetMapping("/relatorio")
+    public ResponseEntity<byte[]> exportarRelatorioProdutos(
+            @RequestParam(value = "nome", required = false) String nome) {
+
+        List<Produto> produtos = (nome != null && !nome.isBlank())
+                ? produtoRepository.findByNomeContainingIgnoreCase(nome)
+                : produtoRepository.findAll();
+
+        StringBuilder csv = new StringBuilder("\uFEFFID;Nome;Categoria;Unidade;Preco Unitario;Estoque;Fornecedor\n");
+
+        produtos.forEach(p -> csv.append(p.getId()).append(";")
+                .append(csvCampo(p.getNome())).append(";")
+                .append(csvCampo(p.getCategoria())).append(";")
+                .append(csvCampo(p.getUnidadeMedida())).append(";")
+                .append(String.format("%.2f", p.getPrecoUnitario() != null ? p.getPrecoUnitario() : 0.0)).append(";")
+                .append(csvCampo(p.getQuantidadeEstoque())).append(";")
+                .append(csvCampo(p.getFornecedor() != null ? p.getFornecedor().getNome() : null)).append("\n"));
+
+        return respostaCsv("relatorio-produtos.csv", csv.toString());
+    }
+
+    /*
+     * estrutura padrao para extrairmos outros relatorios. equipe, nao modificar
+     * aqui, somente no metodo de cima ::)
+     */
+    private String csvCampo(Object valor) {
+        if (valor == null)
+            return "";
+        String texto = (valor instanceof Enum<?> e) ? e.name() : valor.toString();
+        return "\"" + texto.replace("\"", "\"\"") + "\"";
+    }
+
+    private ResponseEntity<byte[]> respostaCsv(String nomeArquivo, String conteudo) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text", "csv", StandardCharsets.UTF_8));
+        headers.setContentDisposition(ContentDisposition.attachment().filename(nomeArquivo).build());
+        return ResponseEntity.ok().headers(headers).body(conteudo.getBytes(StandardCharsets.UTF_8));
+    }
+
     @GetMapping("/cadastro")
     public String paginaCadastramento(Model model) {
 
@@ -56,7 +97,6 @@ public class ControllerProdutos {
         return "pages/cadastro-produto";
     }
 
-    // SALVAR NOVO PRODUTO
     @PostMapping("/salvar")
     public String salvarProduto(
             @ModelAttribute Produto produto,
@@ -66,45 +106,38 @@ public class ControllerProdutos {
             // Validação do preço
             if (produto.getPrecoUnitario() <= 0.01) {
                 throw new IllegalArgumentException(
-                    "O preço do produto deve ser maior que R$ 0,01."
-                );
+                        "O preço do produto deve ser maior que R$ 0,01.");
             }
 
             // Validação da quantidade
             if (produto.getQuantidadeEstoque() <= 1) {
                 throw new IllegalArgumentException(
-                    "A quantidade em estoque deve ser maior que 1."
-                );
+                        "A quantidade em estoque deve ser maior que 1.");
             }
 
             // Validação do nome
             if (produto.getNome() == null || produto.getNome().isBlank()) {
                 throw new IllegalArgumentException(
-                    "O nome do produto não pode ficar em branco."
-                );
+                        "O nome do produto não pode ficar em branco.");
             }
 
             produtoRepository.save(produto);
 
             redirectAttributes.addFlashAttribute(
-                "sucesso", "Produto cadastrado com sucesso!"
-            );
+                    "sucesso", "Produto cadastrado com sucesso!");
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute(
-                "erro", e.getMessage()
-            );
+                    "erro", e.getMessage());
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(
-                "erro", "Erro ao cadastrar produto. Tente novamente."
-            );
+                    "erro", "Erro ao cadastrar produto. Tente novamente.");
         }
 
         return "redirect:/produtos/cadastro";
     }
 
-    // EXCLUIR PRODUTO PELO ID
     @PostMapping("/excluir/{id}")
     public String excluirProduto(
             @PathVariable int id,
@@ -113,31 +146,26 @@ public class ControllerProdutos {
         try {
             if (!produtoRepository.existsById(id)) {
                 throw new IllegalArgumentException(
-                    "Produto não encontrado!"
-                );
+                        "Produto não encontrado!");
             }
 
             produtoRepository.deleteById(id);
 
             redirectAttributes.addFlashAttribute(
-                "sucesso", "Produto excluído com sucesso!"
-            );
+                    "sucesso", "Produto excluído com sucesso!");
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute(
-                "erro", e.getMessage()
-            );
+                    "erro", e.getMessage());
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(
-                "erro", "Não foi possível excluir o produto."
-            );
+                    "erro", "Não foi possível excluir o produto.");
         }
 
         return "redirect:/produtos";
     }
 
-    // NOVO: ABRIR A PÁGINA PARA EDITAR PRODUTO
     @GetMapping("/editar/{id}")
     public String paginaEdicao(
             @PathVariable int id,
@@ -148,8 +176,7 @@ public class ControllerProdutos {
 
         if (produto == null) {
             redirectAttributes.addFlashAttribute(
-                "erro", "Produto não encontrado!"
-            );
+                    "erro", "Produto não encontrado!");
             return "redirect:/produtos";
         }
 
@@ -170,30 +197,26 @@ public class ControllerProdutos {
 
         try {
             Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                    "Produto não encontrado!"
-                ));
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Produto não encontrado!"));
 
             // Validação do nome
             if (dadosAtualizados.getNome() == null ||
                     dadosAtualizados.getNome().isBlank()) {
                 throw new IllegalArgumentException(
-                    "O nome do produto não pode ficar em branco."
-                );
+                        "O nome do produto não pode ficar em branco.");
             }
 
             // Validação do preço
             if (dadosAtualizados.getPrecoUnitario() <= 0.01) {
                 throw new IllegalArgumentException(
-                    "O preço do produto deve ser maior que R$ 0,01."
-                );
+                        "O preço do produto deve ser maior que R$ 0,01.");
             }
 
             // Validação da quantidade
             if (dadosAtualizados.getQuantidadeEstoque() <= 1) {
                 throw new IllegalArgumentException(
-                    "A quantidade em estoque deve ser maior que 1."
-                );
+                        "A quantidade em estoque deve ser maior que 1.");
             }
 
             // Atualiza somente os dados permitidos
@@ -208,20 +231,17 @@ public class ControllerProdutos {
             produtoRepository.save(produto);
 
             redirectAttributes.addFlashAttribute(
-                "sucesso", "Produto atualizado com sucesso!"
-            );
+                    "sucesso", "Produto atualizado com sucesso!");
 
             return "redirect:/produtos";
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute(
-                "erro", e.getMessage()
-            );
+                    "erro", e.getMessage());
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(
-                "erro", "Não foi possível atualizar o produto."
-            );
+                    "erro", "Não foi possível atualizar o produto.");
         }
 
         return "redirect:/produtos/editar/" + id;
