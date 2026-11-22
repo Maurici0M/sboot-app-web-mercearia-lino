@@ -19,7 +19,7 @@ const listMenu = [
   },
 
   {
-    link: "produtos/cadastro",
+    link: "/produtos/cadastro",
     icon: "charm:sticky-note",
     name: "Cadastro",
   },

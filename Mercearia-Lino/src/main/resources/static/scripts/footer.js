@@ -27,7 +27,7 @@ const listItens = [
             
             {
                 text: "Cadastros",
-                link: "produtos/cadastro"
+                link: "/produtos/cadastro"
             },
             
             {
@@ -40,13 +40,13 @@ const listItens = [
             {
                 text: "Cyntia Garçete",
                 linkedin: "https://www.linkedin.com/in/cyntialino/",
-                github: "#"
+                github: "https://github.com/CynGL"
             },
 
             {
                 text: "Izabela Almeida",
                 linkedin: "https://www.linkedin.com/in/izabelasousa-almeida/",
-                github: "#"
+                github: "https://github.com/izabelasousa"
             },
 
             {
